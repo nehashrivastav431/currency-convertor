@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+       .container {
+            max-width: 500px;
+            margin: 40px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+       .form-group {
+            margin-bottom: 20px;
+        }
+       .form-control {
+            width: 100%;
+            height: 40px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+        }
+       .btn {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+       .btn:hover {
+            background-color: #3e8e41;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Currency Converter</h2>
+        <form>
+            <div class="form-group">
+                <label for="amount">Enter Amount:</label>
+                <input type="number" id="amount" class="form-control" value="0">
+            </div>
+            <div class="form-group">
+                <label for="from">From:</label>
+                <select id="from" class="form-control">
+                    <option value="USD">USD</option>
+                    <option value="INR">INR</option>
+                    <option value = "Dollar">Dollar</option>
+                    <!-- Add more options here -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="to">To:</label>
+                <select id="to" class="form-control">
+                    <option value="USD">USD</option>
+                    <option value="INR">INR</option>
+                    <option value="Dollar">Dollar</option>
+                    <!-- Add more options here -->
+                </select>
+            </div>
+            <button class="btn" id="get-exchange-rate">Get Exchange Rate</button>
+            <div id="result"></div>
+        </form>
+    </div>
+
+    <script>
+         const apiKey = 'YOUR_API_KEY_HERE';
+        const apiUrl = 'https://api.exchangerate-api.com/v4/latest';
+
+        document.getElementById('get-exchange-rate').addEventListener('click', async (e) => {
+            e.preventDefault();
+            const amount = document.getElementById('amount').value;
+            const from = document.getElementById('from').value;
+            const to = document.getElementById('to').value;
+
+            try {
+                const response = await fetch(`${apiUrl}/${from}?appid=${apiKey}`);
+                const data = await response.json();
+                const exchangeRate = data.rates[to];
+                const result = amount * exchangeRate;
+                const dollarValue = data.rates.USD;
+                document.getElementById('result').innerHTML = `1 ${from} = ${exchangeRate} ${to}<br> ${amount} ${from} = ${result.toFixed(2)} ${to}<br> 1 USD = ${dollarValue} ${to}`;
+            } catch (error) {
+                console.error(error);
+                document.getElementById('result').innerHTML = 'Error: Unable to fetch exchange rate.';
+            }
+        });
+    </script>
+</body>
